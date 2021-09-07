@@ -7,12 +7,14 @@
     const urlSearchParams = new URLSearchParams(window.location.search);
     const params = Object.fromEntries(urlSearchParams.entries());
     const debug = params["debug"] === "true";
+    const disable = params["disable"] || "";
 
     window.ldfdr=window.ldfdr||function(){(ldfdr._q=ldfdr._q||[]).push([].slice.call(arguments));};
-    window.ldfdr('cfg','trackingCookieDurationDays',15,ss);
 
-    if (params["disable"] === "1") {
+    if (disable === "1") {
       (function(ss,ex) {
+        window.ldfdr('cfg','trackingCookieDurationDays',15,ss);
+
         (function(d,s){
           fs=d.getElementsByTagName(s)[0];
           function ce(src) {
@@ -25,7 +27,7 @@
       })('lAxoEaKdNOA8OYGd');
     }
 
-    if (params["disable"] === "2") {
+    if (disable === "2") {
       (function(ss,ex) {
         (function(d,s) {
           fs=d.getElementsByTagName(s)[0];
