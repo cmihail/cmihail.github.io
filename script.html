@@ -11,7 +11,7 @@
 
     window.ldfdr=window.ldfdr||function(){(ldfdr._q=ldfdr._q||[]).push([].slice.call(arguments));};
 
-    if (disable === "1") {
+    if (disable !== "1") {
       (function(ss,ex) {
         window.ldfdr('cfg','trackingCookieDurationDays',15,ss);
 
@@ -27,7 +27,7 @@
       })('lAxoEaKdNOA8OYGd');
     }
 
-    if (disable === "2") {
+    if (disable !== "2") {
       (function(ss,ex) {
         (function(d,s) {
           fs=d.getElementsByTagName(s)[0];
