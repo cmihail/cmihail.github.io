@@ -4,16 +4,41 @@
   <title>Page with manually added script</title>
 
   <script>
-    (function(ss,ex){
+    (function(ss,ex) {
       window.ldfdr=window.ldfdr||function(){(ldfdr._q=ldfdr._q||[]).push([].slice.call(arguments));};
       window.ldfdr('cfg','trackingCookieDurationDays',15,ss);
       window.ldfdr('cfg','customArgument',15,ss);
-      window.ldfdr('cfg','lfaCookieEnabled',false,ss);
 
       (function(d,s){
-        fs=d.getElementsByTagName(s)[0]; function ce(src){ var cs=d.createElement(s); cs.src=src; setTimeout(function(){fs.parentNode.insertBefore(cs,fs)},1); }; ce('https://sc.lfeeder.com/lftracker_v1_'+ss+(ex?'_'+ex:'')+'_debug.js');
+        fs=d.getElementsByTagName(s)[0];
+        function ce(src) {
+          var cs=d.createElement(s);
+          cs.src=src;
+          setTimeout(function(){fs.parentNode.insertBefore(cs,fs)},1);
+        };
+        ce('https://sc.lfeeder.com/lftracker_v1_'+ss+(ex?'_'+ex:'')+'_debug.js');
       })(document,'script');
     })('lAxoEaKdNOA8OYGd');
+
+    (function(ss,ex) {
+      window.ldfdr=window.ldfdr||function(){(ldfdr._q=ldfdr._q||[]).push([].slice.call(arguments));};
+
+      (function(d,s) {
+        fs=d.getElementsByTagName(s)[0];
+        function ce(src) {
+          var cs=d.createElement(s);
+          cs.src=src;
+          cs.async=1;
+          fs.parentNode.insertBefore(cs,fs);
+        };
+
+        ce('https://sc.lfeeder.com/lftracker_v1_'+ss+(ex?'_'+ex:'')+'_debug.js');
+      })(document,'script');
+    })('p1e024BOvLKaGB6d');
+
+    function acceptCookies() {
+      window.ldfdr.acceptCookie();
+    }
   </script>
 </head>
 
@@ -33,5 +58,7 @@
   <iframe width="420" height="315"
                       src="https://www.youtube.com/embed/eX-3Yc8vARs">
   </iframe>
+
+  <button onclick=acceptCookies()>AcceptCookies</button>
 </body>
 </html>
