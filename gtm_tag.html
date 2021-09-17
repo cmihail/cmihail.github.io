@@ -28,6 +28,13 @@
   <script>
     window.addEventListener("message", event => {
       console.log(event);
+      if (event.origin.indexOf("www.youtube.com") != -1) {
+        console.log("Youtube event");
+        if (event.data.indexOf("onReady") != -1) {
+          console.log("Youtube event onReady");
+        }
+      }
+      console.log(JSON.parse(event.data));
     });
   </script>
 
