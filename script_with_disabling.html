@@ -82,9 +82,11 @@
 
   <script>
     window.addEventListener('load', (event) => {
-      console.log('page is fully loaded');
-      var video = document.getElementById("widget2");
-      video.setAttribute("src", video.getAttribute("data-src"));
+      setTimeout(function () {
+        console.log('page is fully loaded');
+        var video = document.getElementById("widget2");
+        video.setAttribute("src", video.getAttribute("data-src"));
+      }, 4000);
     });
   </script>
 </body>
