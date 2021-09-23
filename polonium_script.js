@@ -804,6 +804,7 @@ if (globalIsReady()) {
     }
 
     var registeredIframes = {};
+    var registeredIframesById = {};
     var mainHandlerInitialized = false;
     var initializedFrames = 0;
 
@@ -895,8 +896,11 @@ if (globalIsReady()) {
       // Sometimes iframe's `load` handler gets called after we had received `videoData`.
       // This can cause `videoData` to be reset back to `null`.
       // Let's prevent that by checking if an entry for `iframeId` already exists.
-      if (!registeredIframes[iframeId]) {
-        registeredIframes[iframeId] = { iframe: iframe, tracked: false, videoData: null };
+      if (!registeredIframesById[iframeId]) {
+        registeredIframesById[iframeId] = { iframe: iframe, tracked: false, videoData: null };
+      }
+      if (!registeredIframes[iframe]) {
+        registeredIframes[iframe] = { iframe: iframe, tracked: false, videoData: null };
       }
 
       // In case when the website has both LF tracker AND YouTube Iframe API
@@ -907,7 +911,7 @@ if (globalIsReady()) {
       var widgetId = extractWidgetIdFromIframeUrl(iframe);
       if (widgetId) {
         console.log('* [leadfeeder][yt-playback] widgetid param found in src:', widgetId, ' Registering an alias', iframeId, iframe.src);
-        registeredIframes[widgetId] = registeredIframes[iframeId];
+        registeredIframesById[widgetId] = registeredIframesById[iframeId];
 
         // This shouldn't ever happen, but if it does it can cause some headache.
         // Let's log it just in case...
@@ -938,12 +942,28 @@ if (globalIsReady()) {
         try {
           var data = JSON.parse(e.data);
 
+          var targetIframe = null;
+          // Based on https://stackoverflow.com/questions/19134311/detect-which-iframe-sent-post-message
+          var values = Object.values(registeredIframes); // TODO: does not work in IE
+          for (var i = 0; i < values.length; i++) {
+            var iframe = values[i].iframe;
+            if (iframe.contentWindow === event.source || iframe.contentDocument.defaultView === event.source) {
+              targetIframe = iframe;
+              break;
+            }
+          }
+
+          if (targetIframe === null) {
+            console.warn("Could not find a registered iframe", data)
+            return;
+          }
+
           switch (data.event) {
           case 'initialDelivery':
-            handleInitialDeliveryEvent(data);
+            handleInitialDeliveryEvent(data, targetIframe);
             break;
           case 'onStateChange':
-            handleOnStateChangeEvent(data);
+            handleOnStateChangeEvent(data, targetIframe);
             break;
           }
         }
@@ -953,29 +973,30 @@ if (globalIsReady()) {
       mainHandlerInitialized = true;
     }
 
-    function handleOnStateChangeEvent(data) {
-      console.log('* [leadfeeder][yt-playback] Received onStateChange event', data.id, data);
+    function handleOnStateChangeEvent(data, targetIframe) {
+      console.log('* [leadfeeder][yt-playback] Received onStateChange event', data, targetIframe.src);
 
       // `-1` is a code for the start of playback. Check out:
       // https://developers.google.com/youtube/iframe_api_reference
       if (data.info !== -1) { return; }
 
-      trackPlaybackStarted(data.id);
+      trackPlaybackStarted(targetIframe);
     }
 
-    function handleInitialDeliveryEvent(data) {
-      console.log('* [leadfeeder][yt-playback] iframe communication initialized', data.id, data);
+    function handleInitialDeliveryEvent(data, targetIframe) {
+      console.log('* [leadfeeder][yt-playback] iframe communication initialized', data, targetIframe.src);
 
       if (!data.info || !data.info.videoData) { return; }
 
-      saveVideoData(data.id, data.info.videoData);
+      saveVideoData(targetIframe, data.info.videoData);
     }
 
     function addYoutubeEventListener(iframe, iframeId) {
+      /*
       // sendMessage to frame to start receiving messages
       sendMessageToIframe(iframe, {
         event: "listening",
-        id: iframeId,
+//        id: iframeId,
         channel: "widget"
       });
 
@@ -983,26 +1004,27 @@ if (globalIsReady()) {
         event: "command",
         func: "addEventListener",
         args: ["onStateChange"],
-        id: iframeId,
+//        id: iframeId,
         channel: "widget"
       });
+      */
     }
 
-    function trackPlaybackStarted(iframeId) {
-      var iframeData = registeredIframes[iframeId];
+    function trackPlaybackStarted(targetIframe) {
+      var iframeData = registeredIframes[targetIframe];
 
       // Sometimes the iframe fires playback started event twice:
       // https://github.com/videojs/videojs-youtube/issues/437
       // Let's block multiple tracking of the same video. Anyways, it should be
       // enough to track playback once per pageview.
       if (iframeData.tracked) {
-        return console.log('* [leadfeeder][yt-playback] Event already tracked', iframeId);
+        return console.log('* [leadfeeder][yt-playback] Event already tracked', targetIframe.src);
       }
 
       iframeData.tracked = true;
 
       var iframe = iframeData.iframe;
-      console.log('* [leadfeeder][yt-playback] Sending video-start event', iframeId);
+      console.log('* [leadfeeder][yt-playback] Sending video-start event', targetIframe.src);
 
       tracker.track({
         eventName: 'video-start',
@@ -1013,8 +1035,8 @@ if (globalIsReady()) {
       });
     }
 
-    function saveVideoData(iframeId, videoData) {
-      var iframeData = registeredIframes[iframeId];
+    function saveVideoData(targetIframe, videoData) {
+      var iframeData = registeredIframes[targetIframe];
 
       if (iframeData.videoData) { return; }
 
@@ -1082,7 +1104,7 @@ if (globalIsReady()) {
       // Send to '*', because sending to www.youtube.com may end up in an uncatchable
       // error in case when the iframe has not yet finished initializing.
       // https://html.spec.whatwg.org/multipage/web-messaging.html#posting-messages
-//      iframe.contentWindow.postMessage(message, '*');
+      iframe.contentWindow.postMessage(message, '*');
     }
 
     setupIframes();
