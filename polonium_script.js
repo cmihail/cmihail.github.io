@@ -805,6 +805,7 @@ if (globalIsReady()) {
 
     var registeredIframes = {};
     var registeredIframesById = {};
+    var trackedVideos = {};
     var mainHandlerInitialized = false;
     var initializedFrames = 0;
 
@@ -897,10 +898,10 @@ if (globalIsReady()) {
       // This can cause `videoData` to be reset back to `null`.
       // Let's prevent that by checking if an entry for `iframeId` already exists.
       if (!registeredIframesById[iframeId]) {
-        registeredIframesById[iframeId] = { iframe: iframe, tracked: false, videoData: null };
+        registeredIframesById[iframeId] = { iframe: iframe, videoData: null };
       }
       if (!registeredIframes[iframe.src]) {
-        registeredIframes[iframe.src] = { iframe: iframe, tracked: false, videoData: null };
+        registeredIframes[iframe.src] = { iframe: iframe, videoData: null };
       }
 
       // In case when the website has both LF tracker AND YouTube Iframe API
@@ -975,7 +976,8 @@ if (globalIsReady()) {
     }
 
     function handleOnStateChangeEvent(eventData, iframeData) {
-      console.log('* [leadfeeder][yt-playback] Received onStateChange event', eventData, iframeData.iframe.src);
+      var iframe = iframeData.iframe;
+      console.log('* [leadfeeder][yt-playback] Received onStateChange event', eventData, iframe.src);
 
       // `-1` is a code for the start of playback. Check out:
       // https://developers.google.com/youtube/iframe_api_reference
@@ -987,14 +989,13 @@ if (globalIsReady()) {
       // https://github.com/videojs/videojs-youtube/issues/437
       // Let's block multiple tracking of the same video. Anyways, it should be
       // enough to track playback once per pageview.
-      if (iframeData.tracked) {
-        return console.log('* [leadfeeder][yt-playback] Event already tracked', iframeData.iframe.src);
+      if (!!trackedVideos[iframe.src]) {
+        return console.log('* [leadfeeder][yt-playback] Event already tracked', iframe.src);
       }
 
-      iframeData.tracked = true;
+      trackedVideos[iframe.src] = true;
 
-      var iframe = iframeData.iframe;
-      console.log('* [leadfeeder][yt-playback] Sending video-start event', iframeData.iframe.src);
+      console.log('* [leadfeeder][yt-playback] Sending video-start event', iframe.src);
 
       tracker.track({
         eventName: 'video-start',
@@ -1030,8 +1031,7 @@ if (globalIsReady()) {
         args: ["onStateChange"],
         id: iframeId,
         channel: "widget"
-      });
-      */
+      });*/
     }
 
     function isEligibleYouTubeIframe(iframe) {
