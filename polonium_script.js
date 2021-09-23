@@ -803,7 +803,8 @@ if (globalIsReady()) {
       return;
     }
 
-    var iframeSourcesData = {};
+    var iframesById = {};
+    var ytVideosInfo = {};
     var mainHandlerInitialized = false;
     var initializedFrames = 0;
 
@@ -893,55 +894,44 @@ if (globalIsReady()) {
       try {
         var data = JSON.parse(e.data);
 
-        var targetIframe = findIframe(e);
+        var targetIframe = findIframe(data.id, e);
         if (targetIframe === null) {
           console.warn("Could not find a registered iframe", data)
           return;
         }
 
-        // Either us or the client might register YT listeners,
-        // so mark the listener as registerd if registered by the client.
-        var iframeSrcData = getIframeSrcData(targetIframe.src);
-        iframeSrcData.listenerRegistered = true;
-
         switch (data.event) {
           case 'initialDelivery':
-            handleInitialDeliveryEvent(data, iframeSrcData);
+            handleInitialDeliveryEvent(data, targetIframe);
             break;
           case 'onStateChange':
-            handleOnStateChangeEvent(data, iframeSrcData);
+            handleOnStateChangeEvent(data, targetIframe);
             break;
         }
       }
       catch (e) { /* [yt-playback] noop */ }
     }
 
-    function getIframeSrcData(iframeSrc) {
-      if (!iframeSourcesData[iframeSrc]) {
-        iframeSourcesData[iframeSrc] = {
-          src: iframeSrc,
-          tracked: false,
-          videoData: null,
-          listenerRegistered: false
-        }
+    function findIframe(id, e) {
+      if (iframesById[id]) {
+        return iframesById[id];
       }
-      return iframeSourcesData[iframeSrc];
-    }
 
-    function findIframe(e) {
       // Based on https://stackoverflow.com/questions/19134311/detect-which-iframe-sent-post-message
       var iframes = document.getElementsByTagName('iframe');
       for (var i = 0; i < iframes.length; i++) {
         var iframe = iframes[i];
         if (iframe.contentWindow === e.source || iframe.contentDocument.defaultView === e.source) {
+          iframesById[id] = iframe;
           return iframe;
         }
       }
       return null;
     }
 
-    function handleOnStateChangeEvent(eventData, iframeSrcData) {
-      console.log('* [leadfeeder][yt-playback] Received onStateChange event', eventData, iframeSrcData.src);
+    function handleOnStateChangeEvent(eventData, iframe) {
+      var ytVideoInfo = getYtVideoInfo(iframe.src);
+      console.log('* [leadfeeder][yt-playback] Received onStateChange event', eventData, ytVideoInfo);
 
       // `-1` is a code for the start of playback. Check out:
       // https://developers.google.com/youtube/iframe_api_reference
@@ -951,44 +941,36 @@ if (globalIsReady()) {
       // https://github.com/videojs/videojs-youtube/issues/437
       // Let's block multiple tracking of the same video. Anyways, it should be
       // enough to track playback once per pageview.
-      if (iframeSrcData.tracked) {
-        console.log('* [leadfeeder][yt-playback] Event already tracked', iframeSrcData.src);
+      if (ytVideoInfo.tracked) {
+        console.log('* [leadfeeder][yt-playback] Event already tracked', ytVideoInfo);
         return;
       }
 
-      iframeSrcData.tracked = true;
-      console.log('* [leadfeeder][yt-playback] Sending video-start event', iframeSrcData.src);
+      ytVideoInfo.tracked = true;
+      console.log('* [leadfeeder][yt-playback] Sending video-start event', ytVideoInfo);
 
       tracker.track({
         eventName: 'video-start',
         properties: {
-          videoUrl: getYtVideoUrl(iframeSrcData.src),
-          videoTitle: getYtVideoTitle(iframeSrcData.videoData),
+          videoUrl: getYtVideoUrl(iframe),
+          videoTitle: getYtVideoTitle(ytVideoInfo.videoData),
         }
       });
     }
 
-    function handleInitialDeliveryEvent(eventData, iframeSrcData) {
-      console.log('* [leadfeeder][yt-playback] iframe communication initialized', eventData, iframeSrcData.src);
+    function handleInitialDeliveryEvent(eventData, iframe) {
+      var ytVideoInfo = getYtVideoInfo(iframe.src);
+      console.log('* [leadfeeder][yt-playback] iframe communication initialized', eventData, ytVideoInfo);
 
-      if (!eventData.info || !eventData.info.videoData || iframeSrcData.videoData) {
+      if (!eventData.info || !eventData.info.videoData || ytVideoInfo.videoData) {
         return;
       }
 
-      iframeSrcData.videoData = eventData.info.videoData;
+      ytVideoInfo.videoData = eventData.info.videoData;
     }
 
     function addYoutubeEventListener(iframe, iframeId) {
-      var iframeSrcData = getIframeSrcData(iframe.src);
-      // Register a listener only if there isn't already one registered as otherwise
-      // we might break the client website.
-      if (iframeSrcData.listenerRegistered) {
-        console.log('* [leadfeeder][yt-playback] iframe listener already registered', iframeId, iframe.src);
-        return;
-      }
-
       console.log('* [leadfeeder][yt-playback] register iframe listener', iframeId, iframe.src);
-      //iframeSrcData.listenerRegistered = true;
 
       // sendMessage to frame to start receiving messages
       sendMessageToIframe(iframe, {
@@ -1006,8 +988,19 @@ if (globalIsReady()) {
       });
     }
 
+    function getYtVideoInfo(iframeSrc) {
+      if (!ytVideosInfo[iframeSrc]) {
+        ytVideosInfo[iframeSrc] = {
+          src: iframeSrc,
+          tracked: false,
+          videoData: null
+        }
+      }
+      return ytVideosInfo[iframeSrc];
+    }
+
     function isEligibleYouTubeIframe(iframe) {
-      return isYouTubeIframe(iframe) && hasYtVideoId(iframe.src) &&
+      return isYouTubeIframe(iframe) && hasYtVideoId(iframe) &&
         !isJsApiDisabled(iframe) && !hasAutoplay(iframe);
     }
 
@@ -1039,8 +1032,8 @@ if (globalIsReady()) {
       iframe.src = iframe.src + stringToAdd;
     }
 
-    function getYtVideoUrl(iframeSrc) {
-      var id = extractYtVideoId(iframeSrc);
+    function getYtVideoUrl(iframe) {
+      var id = extractYtVideoId(iframe);
       return 'https://www.youtube.com/watch?v=' + id;
     }
 
@@ -1050,15 +1043,15 @@ if (globalIsReady()) {
       return videoData.title;
     }
 
-    function hasYtVideoId(iframeSrc) {
-      return !!extractYtVideoId(iframeSrc);
+    function hasYtVideoId(iframe) {
+      return !!extractYtVideoId(iframe);
     }
 
     // Extracts YT video id from an iframe src:
     // e.g. "https://www.youtube.com/embed/hPzUSL8JC_0?enablejsapi=1&rel=0&showinfo=0&origin=http://localhost:4567"
     // gets converted to "hPzUSL8JC_0"
-    function extractYtVideoId(iframeSrc) {
-      return iframeSrc.split("/")[4].split("?")[0];
+    function extractYtVideoId(iframe) {
+      return iframe.src.split("/")[4].split("?")[0];
     }
 
     function sendMessageToIframe(iframe, payload) {
