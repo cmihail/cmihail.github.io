@@ -990,12 +990,10 @@ if (globalIsReady()) {
 
     function getYtVideoInfo(iframeSrc) {
       if (!ytVideosInfo[iframeSrc]) {
-        ytVideosInfo[iframeSrc] = {
-          src: iframeSrc,
-          tracked: false,
-          videoData: null
-        }
+        ytVideosInfo[iframeSrc] = { src: iframeSrc, tracked: false, videoData: null }
       }
+
+      console.log('* [leadfeeder][yt-playback] YT video infos', ytVideosInfo);
       return ytVideosInfo[iframeSrc];
     }
 
