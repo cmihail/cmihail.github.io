@@ -899,8 +899,8 @@ if (globalIsReady()) {
       if (!registeredIframesById[iframeId]) {
         registeredIframesById[iframeId] = { iframe: iframe, tracked: false, videoData: null };
       }
-      if (!registeredIframes[iframe]) {
-        registeredIframes[iframe] = { iframe: iframe, tracked: false, videoData: null };
+      if (!registeredIframes[iframe.src]) {
+        registeredIframes[iframe.src] = { iframe: iframe, tracked: false, videoData: null };
       }
 
       // In case when the website has both LF tracker AND YouTube Iframe API
@@ -942,28 +942,29 @@ if (globalIsReady()) {
         try {
           var data = JSON.parse(e.data);
 
-          var targetIframe = null;
+          var targetIframeData = null;
           // Based on https://stackoverflow.com/questions/19134311/detect-which-iframe-sent-post-message
           var values = Object.values(registeredIframes); // TODO: does not work in IE
           for (var i = 0; i < values.length; i++) {
-            var iframe = values[i].iframe;
+            var iframeData = values[i];
+            var iframe = iframeData.iframe;
             if (iframe.contentWindow === event.source || iframe.contentDocument.defaultView === event.source) {
-              targetIframe = iframe;
+              targetIframeData = iframeData;
               break;
             }
           }
 
-          if (targetIframe === null) {
+          if (targetIframeData === null) {
             console.warn("Could not find a registered iframe", data)
             return;
           }
 
           switch (data.event) {
           case 'initialDelivery':
-            handleInitialDeliveryEvent(data, targetIframe);
+            handleInitialDeliveryEvent(data, targetIframeData);
             break;
           case 'onStateChange':
-            handleOnStateChangeEvent(data, targetIframe);
+            handleOnStateChangeEvent(data, targetIframeData);
             break;
           }
         }
@@ -973,58 +974,27 @@ if (globalIsReady()) {
       mainHandlerInitialized = true;
     }
 
-    function handleOnStateChangeEvent(data, targetIframe) {
-      console.log('* [leadfeeder][yt-playback] Received onStateChange event', data, targetIframe.src);
+    function handleOnStateChangeEvent(eventData, iframeData) {
+      console.log('* [leadfeeder][yt-playback] Received onStateChange event', eventData, iframeData.iframe.src);
 
       // `-1` is a code for the start of playback. Check out:
       // https://developers.google.com/youtube/iframe_api_reference
-      if (data.info !== -1) { return; }
-
-      trackPlaybackStarted(targetIframe);
-    }
-
-    function handleInitialDeliveryEvent(data, targetIframe) {
-      console.log('* [leadfeeder][yt-playback] iframe communication initialized', data, targetIframe.src);
-
-      if (!data.info || !data.info.videoData) { return; }
-
-      saveVideoData(targetIframe, data.info.videoData);
-    }
-
-    function addYoutubeEventListener(iframe, iframeId) {
-      /*
-      // sendMessage to frame to start receiving messages
-      sendMessageToIframe(iframe, {
-        event: "listening",
-//        id: iframeId,
-        channel: "widget"
-      });
-
-      sendMessageToIframe(iframe, {
-        event: "command",
-        func: "addEventListener",
-        args: ["onStateChange"],
-//        id: iframeId,
-        channel: "widget"
-      });
-      */
-    }
-
-    function trackPlaybackStarted(targetIframe) {
-      var iframeData = registeredIframes[targetIframe];
+      if (eventData.info !== -1) {
+        return;
+      }
 
       // Sometimes the iframe fires playback started event twice:
       // https://github.com/videojs/videojs-youtube/issues/437
       // Let's block multiple tracking of the same video. Anyways, it should be
       // enough to track playback once per pageview.
       if (iframeData.tracked) {
-        return console.log('* [leadfeeder][yt-playback] Event already tracked', targetIframe.src);
+        return console.log('* [leadfeeder][yt-playback] Event already tracked', iframeData.iframe.src);
       }
 
       iframeData.tracked = true;
 
       var iframe = iframeData.iframe;
-      console.log('* [leadfeeder][yt-playback] Sending video-start event', targetIframe.src);
+      console.log('* [leadfeeder][yt-playback] Sending video-start event', iframeData.iframe.src);
 
       tracker.track({
         eventName: 'video-start',
@@ -1035,12 +1005,33 @@ if (globalIsReady()) {
       });
     }
 
-    function saveVideoData(targetIframe, videoData) {
-      var iframeData = registeredIframes[targetIframe];
+    function handleInitialDeliveryEvent(eventData, iframeData) {
+      console.log('* [leadfeeder][yt-playback] iframe communication initialized', eventData, iframeData.iframe.src);
 
-      if (iframeData.videoData) { return; }
+      if (!eventData.info || !eventData.info.videoData || iframeData.videoData) {
+        return;
+      }
 
       iframeData.videoData = videoData;
+    }
+
+    function addYoutubeEventListener(iframe, iframeId) {
+      /*
+      // sendMessage to frame to start receiving messages
+      sendMessageToIframe(iframe, {
+        event: "listening",
+        id: iframeId,
+        channel: "widget"
+      });
+
+      sendMessageToIframe(iframe, {
+        event: "command",
+        func: "addEventListener",
+        args: ["onStateChange"],
+        id: iframeId,
+        channel: "widget"
+      });
+      */
     }
 
     function isEligibleYouTubeIframe(iframe) {
