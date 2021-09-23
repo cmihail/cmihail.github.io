@@ -804,32 +804,27 @@ if (globalIsReady()) {
     }
 
     var iframeSourcesData = {};
-
     var mainHandlerInitialized = false;
     var initializedFrames = 0;
-    var youtubeListenerAlreadyRegistered = false;
 
     // In case when the website has both LF tracker AND YouTube Iframe API
     // then iframe API generates its own `widgetid`s that start from `1`.
-    // If we detect any widgetid's, then assign IDs from 1001 by assuming
-    // that a website doesn't have more than 1000 videos. But if there isn't
-    // any widgetid in any iframe URL, then start from 1. This is required
-    // to avoid YT iframe API collisions.
-    // TODO
-    //
-    // Note: iframeIdOffset is calculated only once, no matter if some YT videos
-    // are loaded at a later time. If this proves to be a problem then we should
-    // recalculate it.
+    // Let's assume that a website won't contain more than 1000 videos
+    // and assign IDs starting from 1001 in order to not collide with
+    // `widgetid`s from YT's iframe API.
     var iframeIdOffset = 1000;
 
     function setupIframes() {
       var iframes = document.getElementsByTagName('iframe');
-
-      if (!iframes.length) {
-        return;
-      }
+      if (!iframes.length) { return; }
 
       setupMainMessageHandler();
+
+      // Check if YT API is defined. If yes, then use the listeners from YT API.
+      if (typeof(YT) !== "undefined") {
+        console.log('* [leadfeeder][yt-playback] YT API is defined, so no need to setup listeners for iframes');
+        return;
+      }
 
       for (var i = 0; i < iframes.length; i++) {
         var iframe = iframes[i];
@@ -989,12 +984,6 @@ if (globalIsReady()) {
       // we might break the client website.
       if (iframeSrcData.listenerRegistered) {
         console.log('* [leadfeeder][yt-playback] iframe listener already registered', iframeId, iframe.src);
-        return;
-      }
-
-      // Check if YT API is defined. If yes, then use the listeners from YT API.
-      if (typeof(YT) !== "undefined") {
-        console.log('* [leadfeeder][yt-playback] YT API is defined', iframeId, iframe.src);
         return;
       }
 
