@@ -26,16 +26,13 @@
   </form>
 
   <script>
-    window.addEventListener("message", event => {
-      console.log(event);
-      if (event.origin.indexOf("www.youtube.com") != -1) {
-        console.log("Youtube event");
-        if (event.data.indexOf("onReady") != -1) {
-          console.log("Youtube event onReady");
-        }
-      }
-      console.log(JSON.parse(event.data));
-    });
+    // Testing cookies from https://www.abfunds.com.hk/hk/zh-hk/investor/home.html
+    document.cookie = "AMCV_B66802BE533094020A490D4C%40AdobeOrg=" +
+      "77933605%7CMCIDTS%7C18926%7CMCMID%7C60899328857646758771130318089618037441%7C" +
+      "MCAAMLH-1635778521%7C6%7CMCAAMB-1635778521%7C" +
+      "RKhpRz8krg2tLO6pguXWp5olkAcUniQYPHaMWWgdJ3xzPWQmdj0y%7C" +
+      "MCOPTOUT-1635180921s%7CNONE%7CvVersion%7C4.5.1";
+    document.cookie = "AMCVS_B66802BE533094020A490D4C%40AdobeOrg=1";
   </script>
 
   <iframe width="420" height="315"
