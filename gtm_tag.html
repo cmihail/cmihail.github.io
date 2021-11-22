@@ -7,7 +7,7 @@
     const originalPushState = history.pushState;
     history.pushState = function(context, title, url) {
       console.log("History capture before GTM. ", title, url);
-      originalPushState.pushState(context, title, url);
+      originalPushState(context, title, url);
     }
   </script>
 
@@ -43,10 +43,10 @@
     document.cookie = "AMCVS_B66802BE533094020A490D4C%40AdobeOrg=1";
 
     setTimeout(function() {
-      const secondOriginalPushState = history.pushState;
+      const modifiedPushState = history.pushState;
       history.pushState = function(context, title, url) {
         console.log("History capture after GTM. ", title, url);
-        secondOriginalPushState.pushState(context, title, url);
+        modifiedPushState(context, title, url);
       }
 
       window.ldfdr.pageview({
