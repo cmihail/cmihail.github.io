@@ -4,9 +4,10 @@
   <title>GTM tag</title>
 
   <script>
-    const pushState = history.pushState;
-    function changeHistory(url) {
-      pushState({}, "test", url);
+    const originalPushState = history.pushState;
+    history.pushState = function(context, title, url) {
+      console.log("History capture before GTM. ", title, url);
+      originalPushState.pushState(context, title, url);
     }
   </script>
 
@@ -42,6 +43,12 @@
     document.cookie = "AMCVS_B66802BE533094020A490D4C%40AdobeOrg=1";
 
     setTimeout(function() {
+      const secondOriginalPushState = history.pushState;
+      history.pushState = function(context, title, url) {
+        console.log("History capture after GTM. ", title, url);
+        secondOriginalPushState.pushState(context, title, url);
+      }
+
       window.ldfdr.pageview({
         pageUrl: "https://cmihail.github.io/page_view_test"
         pageTitle: "Page view test"
