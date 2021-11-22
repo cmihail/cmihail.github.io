@@ -4,10 +4,11 @@
   <title>GTM tag</title>
 
   <script>
+    history.pushState({}, "test", "https://cmihail.github.io/gtm_tag.html");
     const originalPushState = history.pushState;
-    history.pushState = function(context, title, url) {
-      console.log("History capture before GTM. ", title, url);
-      originalPushState(context, title, url);
+//    history.pushState = function(context, title, url) {
+//      console.log("History capture before GTM. ", title, url);
+//      originalPushState(context, title, url);
     }
   </script>
 
