@@ -6,7 +6,7 @@
     (function(history){
       var pushState = history.pushState;
       history.pushState = function(state) {
-        console.log("History capture before GTM.", title, url);
+        console.log("History capture before GTM.", location.href);
         return pushState.apply(history, arguments);
       };
     })(window.history);
@@ -46,7 +46,7 @@
       (function(history){
         var pushState = history.pushState;
         history.pushState = function(state) {
-          console.log("History capture after GTM.", title, url);
+          console.log("History capture after GTM.", location.href);
           return pushState.apply(history, arguments);
         };
       })(window.history);
