@@ -4,7 +4,7 @@
   <title>GTM tag</title>
 
   <script>
-    function bodyload() {
+    window.onload = function() {
       var originalPushState = history.pushState;
       history.pushState = function(context, title, url) {
         console.log("History capture before GTM. ", title, url);
@@ -22,7 +22,7 @@
   </script>
 </head>
 
-<body onload="bodyload">
+<body>
   <h2>GTM tag</h2>
 
   <form onsubmit="return false;">
