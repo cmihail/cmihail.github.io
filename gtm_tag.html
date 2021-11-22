@@ -2,30 +2,17 @@
 <html>
 <head>
   <title>GTM tag</title>
+  <script>
+    // Google Tag Manager
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
+      var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
+      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-M25HTBK');
+    // End Google Tag Manager
+  </script>
 </head>
 
 <body>
-  <script>
-    setTimeout(function() {
-      var originalPushState = history.pushState;
-      const PS1 = originalPushState;
-      history.pushState = function(context, title, url) {
-        console.log("History capture before GTM. ", title, url);
-        originalPushState(context, title, url);
-      }
-
-      /*
-      // Google Tag Manager
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
-          j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-M25HTBK');
-      // End Google Tag Manager
-      */
-    }, 1000);
-  </script>
-
   <h2>GTM tag</h2>
 
   <form onsubmit="return false;">
@@ -48,10 +35,9 @@
     document.cookie = "AMCVS_B66802BE533094020A490D4C%40AdobeOrg=1";
 
     setTimeout(function() {
-      var modifiedPushState = history.pushState;
-      const PS2 = modifiedPushState;
+      const modifiedPushState = history.pushState;
       history.pushState = function(context, title, url) {
-        console.log("History capture after GTM. ", title, url);
+        console.log("History capture after GTM.", title, url);
         modifiedPushState(context, title, url);
       }
 
@@ -59,7 +45,7 @@
         pageUrl: "https://cmihail.github.io/page_view_test",
         pageTitle: "Page view test"
       });
-    }, 1500);
+    }, 1000);
   </script>
 
   <iframe width="420" height="315"

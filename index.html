@@ -11,5 +11,15 @@
   <br />
   <a href="script_with_disabling.html">Page with Leadfeeder tag injected manually that can be disabled</a>
   <br />
+
+  <script>
+    setTimeout(function() {
+      const modifiedPushState = history.pushState;
+      history.pushState = function(context, title, url) {
+        console.log("History capture.", title, url);
+        modifiedPushState(context, title, url);
+      }
+    }, 1000);
+  </script>
 </body>
 </html>
