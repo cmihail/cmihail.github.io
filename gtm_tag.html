@@ -5,13 +5,11 @@
 
   <script>
     function bodyload() {
-      document.onload(function() {
-        var originalPushState = history.pushState;
-        history.pushState = function(context, title, url) {
-          console.log("History capture before GTM. ", title, url);
-          originalPushState(context, title, url);
-        }
-      })
+      var originalPushState = history.pushState;
+      history.pushState = function(context, title, url) {
+        console.log("History capture before GTM. ", title, url);
+        originalPushState(context, title, url);
+      }
 
       // Google Tag Manager
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
