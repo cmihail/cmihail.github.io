@@ -4,9 +4,9 @@
   <title>GTM tag</title>
 
   <script>
-    const historyRef = history;
+    const pushState = history.pushState;
     function changeHistory(url) {
-      historyRef.pushState({}, "test", url);
+      pushState({}, "test", url);
     }
   </script>
 
