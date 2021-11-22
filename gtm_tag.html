@@ -3,6 +3,14 @@
 <head>
   <title>GTM tag</title>
   <script>
+    (function(history){
+      var pushState = history.pushState;
+      history.pushState = function(state) {
+        console.log("History capture before GTM.", title, url);
+        return pushState.apply(history, arguments);
+      };
+    })(window.history);
+
     // Google Tag Manager
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
       var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
@@ -35,11 +43,13 @@
     document.cookie = "AMCVS_B66802BE533094020A490D4C%40AdobeOrg=1";
 
     setTimeout(function() {
-      const modifiedPushState = history.pushState;
-      history.pushState = function(context, title, url) {
-        console.log("History capture after GTM.", title, url);
-        modifiedPushState(context, title, url);
-      }
+      (function(history){
+        var pushState = history.pushState;
+        history.pushState = function(state) {
+          console.log("History capture after GTM.", title, url);
+          return pushState.apply(history, arguments);
+        };
+      })(window.history);
 
       window.ldfdr.pageview({
         pageUrl: "https://cmihail.github.io/page_view_test",
