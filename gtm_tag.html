@@ -8,11 +8,13 @@
   <script>
     setTimeout(function() {
       var originalPushState = history.pushState;
+      const PS1 = originalPushState;
       history.pushState = function(context, title, url) {
         console.log("History capture before GTM. ", title, url);
         originalPushState(context, title, url);
       }
 
+      /*
       // Google Tag Manager
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -20,6 +22,7 @@
           j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
       })(window,document,'script','dataLayer','GTM-M25HTBK');
       // End Google Tag Manager
+      */
     }, 1000);
   </script>
 
@@ -46,6 +49,7 @@
 
     setTimeout(function() {
       var modifiedPushState = history.pushState;
+      const PS2 = modifiedPushState;
       history.pushState = function(context, title, url) {
         console.log("History capture after GTM. ", title, url);
         modifiedPushState(context, title, url);
