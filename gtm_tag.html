@@ -3,14 +3,6 @@
 <head>
   <title>GTM tag</title>
   <script>
-    (function(history){
-      var pushState = history.pushState;
-      history.pushState = function(state) {
-        console.log("History capture before GTM.", location.href);
-        return pushState.apply(history, arguments);
-      };
-    })(window.history);
-
     // Google Tag Manager
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
       var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
@@ -41,21 +33,6 @@
       "RKhpRz8krg2tLO6pguXWp5olkAcUniQYPHaMWWgdJ3xzPWQmdj0y%7C" +
       "MCOPTOUT-1635180921s%7CNONE%7CvVersion%7C4.5.1";
     document.cookie = "AMCVS_B66802BE533094020A490D4C%40AdobeOrg=1";
-
-    setTimeout(function() {
-      (function(history){
-        var pushState = history.pushState;
-        history.pushState = function(state) {
-          console.log("History capture after GTM.", location.href);
-          return pushState.apply(history, arguments);
-        };
-      })(window.history);
-
-      window.ldfdr.pageview({
-        pageUrl: "https://cmihail.github.io/page_view_test",
-        pageTitle: "Page view test"
-      });
-    }, 1000);
   </script>
 
   <iframe width="420" height="315"
