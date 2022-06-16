@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Page with iframe script</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DL9QCYV6DF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-DL9QCYV6DF');
+  </script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-220733448-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-220733448-1');
+  </script>
+</head>
+
+<body>
+  <h2>Page with iframe script</h2>
+
+  <form onsubmit="return false;" id="form-id" action="/test-action" class="form-class">
+    <label for="first_name2">First name:</label><br>
+    <input type="text" id="first_name2" name="first_name2"><br>
+    <label for="last_name2">Last name:</label><br>
+    <input type="text" id="last_name2" name="last_name2"><br>
+    <label for="full_name">Full name:</label><br>
+    <input type="text" id="full_name" name="full_name"><br>
+    <label for="phone2">Phone:</label><br>
+    <input type="tel" id="phone2" name="phone"2><br>
+    <label for="email2">Email:</label><br>
+    <input type="email" id="email2" name="email2"><br>
+
+    <label for="checkbox">Checkbox:</label><br>
+    <input type="checkbox" id="form_checkbox" name="form_checkbox" checked><br>
+
+    <label for="testing-12cb34-###">Testing normalized 1:</label><br>
+    <input type="text" name="testing-12cb34-###" id="testing-12cb34-###"><br>
+    <label for="testing-777-cae341">Testing normalized 2:</label><br>
+    <input type="text" name="testing-777-cae341" id="testing-777-cae341"><br>
+
+    <label for="textarea-aaa222">Textarea:</label><br>
+    <textarea name="textarea-aaa222" id="textarea-aaa222"></textarea><br />
+
+    <input type="submit" value="Submit">
+  </form>
+  <br />
+
+  <iframe width="800" height="800" src="https://cmihail.github.io/script_with_disabling.html">
+  </iframe>
+  <br />
+</body>
+</html>
