@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Page with manually added script</title>
+
+  <script>
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlSearchParams.entries());
+    const debug = params["debug"] === "true";
+    const disable = params["disable"] || "";
+
+    // Testing cookies from https://www.abfunds.com.hk/hk/zh-hk/investor/home.html
+    document.cookie = "AMCV_B66802BE533094020A490D4C%40AdobeOrg=" +
+      "77933605%7CMCIDTS%7C18926%7CMCMID%7C60899328857646758771130318089618037441%7C" +
+      "MCAAMLH-1635778521%7C6%7CMCAAMB-1635778521%7C" +
+      "RKhpRz8krg2tLO6pguXWp5olkAcUniQYPHaMWWgdJ3xzPWQmdj0y%7C" +
+      "MCOPTOUT-1635180921s%7CNONE%7CvVersion%7C4.5.1";
+    document.cookie = "AMCVS_B66802BE533094020A490D4C%40AdobeOrg=1";
+    document.cookie = "hubspotutk=aaaabbbbccccddddddd3333";
+
+    window.ldfdr=window.ldfdr||function(){(ldfdr._q=ldfdr._q||[]).push([].slice.call(arguments));};
+
+    if (disable !== "1") {
+      console.log("Loading script 'lAxoEaKdNOA8OYGd'");
+
+      (function(ss,ex) {
+        window.ldfdr('cfg','trackingCookieDurationDays',15,ss);
+
+        (function(d,s){
+          fs=d.getElementsByTagName(s)[0];
+          function ce(src) {
+            var cs=d.createElement(s);
+            cs.src=src;
+            setTimeout(function(){fs.parentNode.insertBefore(cs,fs)},1);
+          };
+          ce('https://sc.lfeeder.com/lftracker_v1_'+ss+(ex?'_'+ex:'')+(debug?'_debug':'')+'.js');
+        })(document,'script');
+      })('lAxoEaKdNOA8OYGd');
+    }
+
+    if (disable !== "2") {
+      console.log("Loading script 'p1e024BOvLKaGB6d'");
+
+      setTimeout(function() {
+      (function(ss,ex) {
+        (function(d,s) {
+          fs=d.getElementsByTagName(s)[0];
+          function ce(src) {
+            var cs=d.createElement(s);
+            cs.src=src;
+            cs.async=1;
+            fs.parentNode.insertBefore(cs,fs);
+          };
+
+          ce('https://sc.lfeeder.com/lftracker_v1_'+ss+(ex?'_'+ex:'')+(debug?'_debug':'')+'.js');
+        })(document,'script');
+      })('p1e024BOvLKaGB6d');
+      }, 500);
+    }
+
+    function acceptCookies() {
+      window.ldfdr.acceptCookie();
+    }
+  </script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DL9QCYV6DF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-DL9QCYV6DF');
+  </script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-220733448-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-220733448-1');
+  </script>
+  -->
+</head>
+
+<body>
+  <h2>Page with manually added script</h2>
+
+  <form onsubmit="return false;" id="form-id" action="/test-action" class="form-class">
+    <label for="first_name2">First name:</label><br>
+    <input type="text" id="first_name2" name="first_name2"><br>
+    <label for="last_name2">Last name:</label><br>
+    <input type="text" id="last_name2" name="last_name2"><br>
+    <label for="full_name">Full name:</label><br>
+    <input type="text" id="full_name" name="full_name"><br>
+    <label for="phone2">Phone:</label><br>
+    <input type="tel" id="phone2" name="phone"2><br>
+    <label for="email2">Email:</label><br>
+    <input type="email" id="email2" name="email2"><br>
+
+    <label for="checkbox">Checkbox:</label><br>
+    <input type="checkbox" id="form_checkbox" name="form_checkbox" checked><br>
+
+    <label for="testing-12cb34-###">Testing normalized 1:</label><br>
+    <input type="text" name="testing-12cb34-###" id="testing-12cb34-###"><br>
+    <label for="testing-777-cae341">Testing normalized 2:</label><br>
+    <input type="text" name="testing-777-cae341" id="testing-777-cae341"><br>
+
+    <label for="textarea-aaa222">Textarea:</label><br>
+    <textarea name="textarea-aaa222" id="textarea-aaa222"></textarea><br />
+
+    <input type="submit" value="Submit">
+  </form>
+  <br />
+
+  <button onclick=acceptCookies()>AcceptCookies</button>
+  <br />
+
+  <a href="https://cmihail.github.io/script.html?1#1">This page with ?1</a>
+  <br />
+  <a href="https://cmihail.github.io/script.html?2#2">This page with ?2</a>
+  <br />
+  <a href="https://cmihail.github.io/script.html?3#3">This page with ?3</a>
+  <br />
+
+  <iframe width="420" height="315"
+                      src="https://www.youtube.com/embed/eX-3Yc8vARs?enablejsapi=1&mute=1">
+  </iframe>
+  <br />
+</body>
+</html>
