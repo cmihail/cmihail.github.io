@@ -22,6 +22,7 @@
   </script>
 
   function isEmailInputValid() {
+    console.log("verify email");
     const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
     var email = document.getElementById('email').value;
@@ -30,6 +31,7 @@
 
   function validate() {
     if (!isEmailInputValid()) {
+      console.log("invalid email");
       alert('Invalid email.');
       return false;
     }
