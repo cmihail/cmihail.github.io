@@ -19,24 +19,24 @@
     gtag('js', new Date());
 
     gtag('config', 'UA-220733448-1');
-  </script>
 
-  function isEmailInputValid() {
-    console.log("verify email");
-    const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    function isEmailInputValid() {
+      console.log("verify email");
+      const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-    var email = document.getElementById('email').value;
-    return String(email).toLowerCase().match(re);
-  }
-
-  function validate() {
-    if (!isEmailInputValid()) {
-      console.log("invalid email");
-      alert('Invalid email.');
-      return false;
+      var email = document.getElementById('email').value;
+      return String(email).toLowerCase().match(re);
     }
-    return true;
-  }
+
+    function validate() {
+      if (!isEmailInputValid()) {
+        console.log("invalid email");
+        alert('Invalid email.');
+        return false;
+      }
+      return true;
+    }
+  </script>
 </head>
 
 <body>
