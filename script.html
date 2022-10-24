@@ -61,23 +61,6 @@
     function acceptCookies() {
       window.ldfdr.acceptCookie();
     }
-
-    function isEmailInputValid() {
-      console.log("verify email");
-      const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
-      var email = document.getElementById('email').value;
-      return String(email).toLowerCase().match(re);
-    }
-
-    var form = document.getElementById("form-id");
-    form.addEventListener("submit", function(e) {
-      if (!isEmailInputValid()) {
-        console.log("invalid email");
-        alert('Invalid email.');
-        e.preventDefault();
-      }
-    });
   </script>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -155,5 +138,24 @@
           width="640" height="360" frameborder="0">
   </iframe>
   <br />
+
+  <script>
+    function isEmailInputValid() {
+      console.log("verify email");
+      const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+      var email = document.getElementById('email').value;
+      return String(email).toLowerCase().match(re);
+    }
+
+    var form = document.getElementById("form-id");
+    form.addEventListener("submit", function(e) {
+      if (!isEmailInputValid()) {
+        console.log("invalid email");
+        alert('Invalid email.');
+        e.preventDefault();
+      }
+    });
+  </script>
 </body>
 </html>
