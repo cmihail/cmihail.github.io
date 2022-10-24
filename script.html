@@ -70,7 +70,7 @@
       return String(email).toLowerCase().match(re);
     }
 
-    function validate() {
+    function onSubmit() {
       if (!isEmailInputValid()) {
         console.log("invalid email");
         alert('Invalid email.');
@@ -107,7 +107,7 @@
 <body>
   <h2>Page with manually added script</h2>
 
-  <form onsubmit="return false;" id="form-id" action="/test-action" class="form-class">
+  <form onsubmit="onSubmit();" id="form-id" action="/test-action" method="get" class="form-class">
     <label for="first_name[123]">First name:</label><br>
     <input type="text" id="first_name" name="first_name[123]"><br>
     <label for="last_name[abc1]">Last name:</label><br>
@@ -130,7 +130,7 @@
     <label for="textarea-aaa222">Textarea:</label><br>
     <textarea name="textarea-aaa222" id="textarea-aaa222"></textarea><br />
 
-    <input onclick="validate()" type="submit" value="Submit">
+    <input type="submit" value="Submit">
   </form>
   <br />
 
