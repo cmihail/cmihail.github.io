@@ -61,6 +61,24 @@
     function acceptCookies() {
       window.ldfdr.acceptCookie();
     }
+
+    function isEmailInputValid() {
+      console.log("verify email");
+      const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+      var email = document.getElementById('email').value;
+      return String(email).toLowerCase().match(re);
+    }
+
+    function validate() {
+      if (!isEmailInputValid()) {
+        console.log("invalid email");
+        alert('Invalid email.');
+        return false;
+      }
+      return true;
+    }
+  </script>
   </script>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -112,7 +130,7 @@
     <label for="textarea-aaa222">Textarea:</label><br>
     <textarea name="textarea-aaa222" id="textarea-aaa222"></textarea><br />
 
-    <input type="submit" value="Submit">
+    <input onclick="validate()" type="submit" value="Submit">
   </form>
   <br />
 
