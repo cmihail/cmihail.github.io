@@ -6,6 +6,8 @@
   <script>
     const urlSearchParams = new URLSearchParams(window.location.search);
     const params = Object.fromEntries(urlSearchParams.entries());
+    console.log("Query params: ", params);
+
     const debug = params["debug"] === "true";
     const disable = params["disable"] || "";
 
@@ -58,15 +60,18 @@
       }, 500);
     }
 
-    const identitySuffix = params["identitySuffix"];
-    if (!!identitySuffix) {
-      acceptCookies()
-      var email = "mihail.costea+" + identitySuffix + "@leadfeeder.com";
-      window.ldfdr.identify({ email: email, firstName: identitySuffix, lastName: identitySuffix });
-    }
-
     function acceptCookies() {
       window.ldfdr.acceptCookie();
+    }
+
+    const identitySuffix = params["identitySuffix"];
+    console.log("Identity suffix: ", params);
+    if (!!identitySuffix) {
+      setTimeout(function() {
+        window.ldfdr.acceptCookie();
+        var email = "mihail.costea+" + identitySuffix + "@leadfeeder.com";
+        window.ldfdr.identify({ email: email, firstName: identitySuffix, lastName: identitySuffix });
+      }, 1000);
     }
   </script>
 
@@ -80,7 +85,7 @@
       gtag('js', new Date());
 
       gtag('config', 'G-DL9QCYV6DF');
-    }, 2000);
+    }, 3000);
   </script>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
