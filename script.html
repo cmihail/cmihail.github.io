@@ -58,6 +58,13 @@
       }, 500);
     }
 
+    const identitySuffix = params["identitySuffix"];
+    if (!!identitySuffix) {
+      acceptCookies()
+      var email = "mihail.costea+" + identitySuffix + "@leadfeeder.com";
+      window.ldfdr.identify({ email: email, firstName: identitySuffix, lastName: identitySuffix });
+    }
+
     function acceptCookies() {
       window.ldfdr.acceptCookie();
     }
