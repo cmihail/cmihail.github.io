@@ -65,7 +65,7 @@
     }
 
     const identitySuffix = params["identitySuffix"];
-    console.log("Identity suffix: ", params);
+    console.log("Identity suffix: ", identitySuffix, !!identitySuffix);
     if (!!identitySuffix) {
       setTimeout(function() {
         window.ldfdr.acceptCookie();
