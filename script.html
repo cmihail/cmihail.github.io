@@ -66,11 +66,14 @@
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-DL9QCYV6DF"></script>
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    // Delayed GA tag execution in order to simulate GA load after LF tracker.
+    setTimeout(function() {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-    gtag('config', 'G-DL9QCYV6DF');
+      gtag('config', 'G-DL9QCYV6DF');
+    }, 2000);
   </script>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
